@@ -141,10 +141,6 @@ class HomeScreen extends ConsumerWidget {
 
                           const SizedBox(height: 24),
 
-                          // Next / Previous Navigation Controls
-                          _buildNavigationControls(context, ref, activeIndex, totalFiltered),
-
-                          const SizedBox(height: 16),
                         ],
                       ),
               ),
@@ -152,6 +148,14 @@ class HomeScreen extends ConsumerWidget {
           ],
         ),
       ),
+      bottomNavigationBar: totalFiltered == 0
+          ? null
+          : SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 20.0, top: 8.0),
+                child: _buildNavigationControls(context, ref, activeIndex, totalFiltered),
+              ),
+            ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showAddEditCardDialog(context, ref),
         label: Text(
@@ -329,55 +333,51 @@ class HomeScreen extends ConsumerWidget {
     final isLast = activeIndex == totalFiltered - 1;
 
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         // Previous Button
-        Expanded(
-          child: OutlinedButton.icon(
-            onPressed: isFirst
-                ? null
-                : () {
-                    ref.read(currentCardIndexProvider.notifier).setIndex(activeIndex - 1);
-                  },
-            icon: const Icon(Icons.arrow_back_rounded),
-            label: Text(
-              'Previous',
-              style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
+        OutlinedButton.icon(
+          onPressed: isFirst
+              ? null
+              : () {
+                  ref.read(currentCardIndexProvider.notifier).setIndex(activeIndex - 1);
+                },
+          icon: const Icon(Icons.arrow_back_rounded),
+          label: Text(
+            'Previous',
+            style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
+          ),
+          style: OutlinedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              side: BorderSide(
-                color: isFirst ? Colors.transparent : Colors.deepPurple.withValues(alpha: 0.3),
-              ),
+            side: BorderSide(
+              color: isFirst ? Colors.transparent : Colors.deepPurple.withValues(alpha: 0.3),
             ),
           ),
         ),
-        const SizedBox(width: 16),
         // Next Button
-        Expanded(
-          child: ElevatedButton.icon(
-            onPressed: isLast
-                ? null
-                : () {
-                    ref.read(currentCardIndexProvider.notifier).setIndex(activeIndex + 1);
-                  },
-            icon: const Icon(Icons.arrow_forward_rounded),
-            label: Text(
-              'Next',
-              style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
-            ),
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              backgroundColor: Colors.deepPurple,
-              foregroundColor: Colors.white,
-              disabledBackgroundColor: Colors.grey.withValues(alpha: 0.12),
-              disabledForegroundColor: Colors.grey.withValues(alpha: 0.38),
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
+        ElevatedButton.icon(
+          onPressed: isLast
+              ? null
+              : () {
+                  ref.read(currentCardIndexProvider.notifier).setIndex(activeIndex + 1);
+                },
+          icon: const Icon(Icons.arrow_forward_rounded),
+          label: Text(
+            'Next',
+            style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
+          ),
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            backgroundColor: Colors.deepPurple,
+            foregroundColor: Colors.white,
+            disabledBackgroundColor: Colors.grey.withValues(alpha: 0.12),
+            disabledForegroundColor: Colors.grey.withValues(alpha: 0.38),
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
           ),
         ),
@@ -481,7 +481,10 @@ class HomeScreen extends ConsumerWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
           title: Text(
             isEdit ? 'Edit Flashcard' : 'Create Flashcard',
-            style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
+            style: GoogleFonts.outfit(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
           ),
           content: SingleChildScrollView(
             child: Form(
@@ -495,9 +498,14 @@ class HomeScreen extends ConsumerWidget {
                     controller: questionController,
                     maxLines: 3,
                     textCapitalization: TextCapitalization.sentences,
+                    style: GoogleFonts.outfit(
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
                     decoration: InputDecoration(
                       labelText: 'Question',
-                      labelStyle: GoogleFonts.outfit(),
+                      labelStyle: GoogleFonts.outfit(
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                      ),
                       alignLabelWithHint: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -515,9 +523,14 @@ class HomeScreen extends ConsumerWidget {
                     controller: answerController,
                     maxLines: 4,
                     textCapitalization: TextCapitalization.sentences,
+                    style: GoogleFonts.outfit(
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
                     decoration: InputDecoration(
                       labelText: 'Answer',
-                      labelStyle: GoogleFonts.outfit(),
+                      labelStyle: GoogleFonts.outfit(
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                      ),
                       alignLabelWithHint: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -534,10 +547,18 @@ class HomeScreen extends ConsumerWidget {
                   TextFormField(
                     controller: categoryController,
                     textCapitalization: TextCapitalization.words,
+                    style: GoogleFonts.outfit(
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
                     decoration: InputDecoration(
                       labelText: 'Category (Optional)',
-                      labelStyle: GoogleFonts.outfit(),
+                      labelStyle: GoogleFonts.outfit(
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                      ),
                       hintText: 'e.g. History, Math, Flutter',
+                      hintStyle: GoogleFonts.outfit(
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                      ),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
@@ -606,11 +627,16 @@ class HomeScreen extends ConsumerWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: Text(
             'Delete Card',
-            style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
+            style: GoogleFonts.outfit(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
           ),
           content: Text(
             'Are you sure you want to permanently delete this flashcard?',
-            style: GoogleFonts.outfit(),
+            style: GoogleFonts.outfit(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
           actions: [
             TextButton(
